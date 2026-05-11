@@ -16,7 +16,12 @@ export const apiBaseUrl = marketplaceRootURL => {
   }
 
   // Otherwise, use the given marketplaceRootURL parameter or the same domain and port as the frontend
-  return marketplaceRootURL ? marketplaceRootURL.replace(/\/$/, '') : `${window.location.origin}`;
+  // Guard against SSR environment where window is not defined
+  return marketplaceRootURL
+    ? marketplaceRootURL.replace(/\/$/, '')
+    : typeof window !== 'undefined'
+    ? `${window.location.origin}`
+    : process.env.REACT_APP_MARKETPLACE_ROOT_URL || '';
 };
 
 // Application type handlers for JS SDK.
